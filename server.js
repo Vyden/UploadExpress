@@ -12,28 +12,54 @@ const s3 = new aws.S3({
   endpoint: spacesEndpoint
 });
 
-const upload = multer({
+const uploadVideo = multer({
   storage: multerS3({
     s3: s3,
     bucket: 'vyden',
     acl: 'public-read',
     key: function (request, file, cb) {
       console.log(file);
-      cb(null, file.originalname);
+      cb(null, "videos/" + file.originalname);
     }
   })
 }).array('upload', 1);
 
-app.post('/upload', function (request, response, next) {
-  upload(request, response, function (error) {
+app.post('/uploadVideo', function (request, response, next) {
+  uploadVideo(request, response, function (error) {
     if (error) {
       console.log(error);
       return response.redirect("/error");
     }
     console.log('File uploaded successfully.');
-    response.redirect("/success");
+    response.json({message: "success"});
   });
 });
+
+
+const uploadModel = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: 'vyden',
+    acl: 'public-read',
+    key: function (request, file, cb) {
+      console.log(file);
+      cb(null, "models/" + file.originalname);
+    }
+  })
+}).array('upload', 1);
+
+app.post('/uploadModel', function (request, response, next) {
+  uploadModel(request, response, function (error) {
+    if (error) {
+      console.log(error);
+      return response.redirect("/error");
+    }
+    console.log('File uploaded successfully.');
+    response.json({message: "success"});
+  });
+});
+
+
 
 app.get('/', function (request, response) {
   response.sendFile(__dirname + '/public/index.html');
