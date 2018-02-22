@@ -28,7 +28,7 @@ app.post('/uploadVideo', function (request, response, next) {
   uploadVideo(request, response, function (error) {
     if (error) {
       console.log(error);
-      return response.redirect("/error");
+      return response.json({message: error});
     }
     console.log('File uploaded successfully.');
     response.json({message: "success"});
@@ -52,7 +52,7 @@ app.post('/uploadModel', function (request, response, next) {
   uploadModel(request, response, function (error) {
     if (error) {
       console.log(error);
-      return response.redirect("/error");
+      return response.json({message: error});
     }
     console.log('File uploaded successfully.');
     response.json({message: "success"});
