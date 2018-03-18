@@ -7,7 +7,10 @@ const cors = require('cors');
 const app = express();
 app.use(cors());
 // Set S3 endpoint to DigitalOcean Spaces
-const spacesEndpoint = new aws.Endpoint('nyc3.digitaloceanspaces.com');
+//const spacesEndpoint = new aws.Endpoint('nyc3.digitaloceanspaces.com');
+
+const spacesEndpoint = new aws.Endpoint('http://s3-us-east-2.amazonaws.com/vyden');
+
 const s3 = new aws.S3({
   endpoint: spacesEndpoint
 });
