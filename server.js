@@ -1,4 +1,6 @@
 
+
+var zip = new require('node-zip')();
 const aws = require('aws-sdk');
 const express = require('express');
 const multer = require('multer');
@@ -24,18 +26,20 @@ const uploadVideo = multer({
       console.log(file);
       cb(null, "videos/" + file.originalname);
     }
-  })
+  }),
+  limits: { fileSize: 1000000000 }
 }).array('upload', 1);
 
 app.post('/uploadVideo', function (request, response, next) {
-  uploadVideo(request, response, function (error) {
-    if (error) {
-      console.log(error);
-      return response.json({message: error});
-    }
-    console.log('File uploaded successfully.');
-    response.json({message: "success"});
-  });
+		uploadVideo(request, response, function (error) {
+    		if (error) {
+      			console.log(error);
+     			return response.json({message: error});
+    		}
+    		console.log('File uploaded successfully.');
+
+    		response.json({message: "Success"});
+  		});
 });
 
 
@@ -48,32 +52,19 @@ const uploadModel = multer({
       console.log(file);
       cb(null, "models/" + file.originalname);
     }
-  })
+  }),
+  limits: { fileSize: 25000000 }
 }).array('upload', 1);
 
 app.post('/uploadModel', function (request, response, next) {
-  uploadModel(request, response, function (error) {
-    if (error) {
-      console.log(error);
-      return response.json({message: error});
-    }
-    console.log('File uploaded successfully.');
-    response.json({message: "success"});
-  });
-});
-
-
-
-app.get('/', function (request, response) {
-  response.sendFile(__dirname + '/public/index.html');
-});
-
-app.get("/success", function (request, response) {
-  response.sendFile(__dirname + '/public/success.html');
-});
-
-app.get("/error", function (request, response) {
-  response.sendFile(__dirname + '/public/error.html');
+	 uploadModel(request, response, function (error) {
+   	 if (error) {
+      		console.log(error);
+      		return response.json({message: error});
+       	}
+    		console.log('File uploaded successfully.');
+    		response.json({message: "success"});
+	});
 });
 
 app.listen(3001, function () {
