@@ -5,6 +5,9 @@ const aws = require('aws-sdk');
 const express = require('express');
 const multer = require('multer');
 const multerS3 = require('multer-s3');
+var AdmZip = require('adm-zip');
+var fs = require('fs');
+var unzipToS3 = require('unzip-to-s3');
 const cors = require('cors');
 const app = express();
 app.use(cors());
@@ -28,7 +31,7 @@ const uploadVideo = multer({
     }
   }),
   limits: { fileSize: 1000000000 }
-}).array('upload', 1);
+}).array('upload',1);
 
 app.post('/uploadVideo', function (request, response, next) {
 		uploadVideo(request, response, function (error) {
@@ -41,7 +44,6 @@ app.post('/uploadVideo', function (request, response, next) {
     		response.json({message: "Success"});
   		});
 });
-
 
 const uploadModel = multer({
   storage: multerS3({
@@ -56,15 +58,8 @@ const uploadModel = multer({
   limits: { fileSize: 25000000 }
 }).array('upload', 1);
 
-app.post('/uploadModel', function (request, response, next) {
-	 uploadModel(request, response, function (error) {
-   	 if (error) {
-      		console.log(error);
-      		return response.json({message: error});
-       	}
-    		console.log('File uploaded successfully.');
-    		response.json({message: "success"});
-	});
+app.post('/uploadModel' ,function (req, res, next) {
+	
 });
 
 app.listen(3001, function () {
