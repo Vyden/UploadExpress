@@ -58,8 +58,16 @@ const uploadModel = multer({
   limits: { fileSize: 25000000 }
 }).array('upload', 1);
 
-app.post('/uploadModel' ,function (req, res, next) {
-	
+app.post('/uploadModel' ,function (req, res) {
+		uploadModel(req, res, function (error) {
+    		if (error) {
+      			console.log(error);
+     			return res.json({message: error});
+    		}
+    		console.log('File uploaded successfully.');
+
+    		res.json({message: "Success"});
+  		});
 });
 
 app.listen(3001, function () {
