@@ -11,8 +11,6 @@ var unzipToS3 = require('unzip-to-s3');
 const cors = require('cors');
 const app = express();
 app.use(cors());
-// Set S3 endpoint to DigitalOcean Spaces
-//const spacesEndpoint = new aws.Endpoint('nyc3.digitaloceanspaces.com');
 
 const spacesEndpoint = new aws.Endpoint('http://s3-us-east-2.amazonaws.com/vyden');
 
@@ -60,6 +58,31 @@ const uploadModel = multer({
 
 app.post('/uploadModel' ,function (req, res) {
 		uploadModel(req, res, function (error) {
+    		if (error) {
+      			console.log(error);
+     			return res.json({message: error});
+    		}
+    		console.log('File uploaded successfully.');
+
+    		res.json({message: "Success"});
+  		});
+});
+
+const uploadSrt = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: 'vyden',
+    acl: 'public-read',
+    key: function (request, file, cb) {
+      console.log(file);
+      cb(null, "srts/" + file.originalname);
+    }
+  }),
+  limits: { fileSize: 25000000 }
+}).array('upload', 1);
+
+app.post('/uploadSrt' ,function (req, res) {
+		uploadSrt(req, res, function (error) {
     		if (error) {
       			console.log(error);
      			return res.json({message: error});
