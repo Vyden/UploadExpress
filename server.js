@@ -1,13 +1,8 @@
 
-
-var zip = new require('node-zip')();
 const aws = require('aws-sdk');
 const express = require('express');
 const multer = require('multer');
 const multerS3 = require('multer-s3');
-var AdmZip = require('adm-zip');
-var fs = require('fs');
-var unzipToS3 = require('unzip-to-s3');
 const cors = require('cors');
 const app = express();
 app.use(cors());
@@ -41,6 +36,29 @@ app.post('/uploadVideo', function (request, response, next) {
 
     		response.json({message: "Success"});
   		});
+});
+
+const uploadAudio = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: 'vyden',
+    acl: 'public-read',
+    key: function (request, file, cb) {
+      console.log(file);
+      cb(null, "audios/" + file.originalname);
+    }
+  })
+}).array('upload', 1);
+
+app.post('/uploadAudio', function (request, response, next) {
+  uploadAudio(request, response, function (error) {
+    if (error) {
+      console.log(error);
+      return response.json({message: error});
+    }
+    console.log('File uploaded successfully.');
+    response.json({message: "success"});
+  });
 });
 
 const uploadModel = multer({
